@@ -9,7 +9,7 @@ fn main() {
         Some(r)  => r,
         None => String::from(".")
     };
-    let files = files::recurse_dirs(root.as_str());
+    let files = files::recurse_dirs(root.as_str(), 0);
     files::pp_file(&files);
 
 }

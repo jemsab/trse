@@ -1,6 +1,7 @@
 pub struct File {
     pub name: String,
     pub sub_elements: Vec<File>,
+    pub depth: i32,
 }
 
 impl std::fmt::Display for File {
@@ -26,10 +27,11 @@ pub fn pp_file(file: &File) {
     println!();
 }
 
-pub fn recurse_dirs(start: &str) -> File {
+pub fn recurse_dirs(start: &str, depth: i32) -> File {
     let mut root = File {
         name: String::from(start),
         sub_elements: Vec::new(),
+        depth,
     };
 
     if let Ok(dirs) = std::fs::read_dir(start) {
@@ -40,13 +42,14 @@ pub fn recurse_dirs(start: &str) -> File {
                     let file_name = file_name.to_str().unwrap();
                     if let Ok(file_type) = dir.file_type() {
                         let sub_elements = if file_type.is_dir() {
-                            recurse_dirs(dir.path().to_str().unwrap()).sub_elements
+                            recurse_dirs(dir.path().to_str().unwrap(), depth + 1).sub_elements
                         } else {
                             Vec::new()
                         };
                         let file = File {
                             name: String::from(file_name),
                             sub_elements,
+                            depth
                         };
                         root.sub_elements.push(file);
                     }
