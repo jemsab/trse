@@ -4,12 +4,8 @@ mod files;
 
 fn main() {
 
-    let root = std::env::args().nth(1);
-    let root = match root {
-        Some(r)  => r,
-        None => String::from(".")
-    };
-    let files = files::recurse_dirs(root.as_str(), 0);
-    files::pp_file(&files);
+    let args = args::parse_args();
 
+    let files = files::recurse_dirs(args.directory.as_str(), 0, args.depth);
+    files::pp_file(&files);
 }
