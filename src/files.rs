@@ -31,7 +31,8 @@ pub fn pp_file(file: &File) {
     println!();
 }
 
-pub fn recurse_dirs(start: &str, depth: u32, max_depth: u32) -> File {
+pub fn recurse_dirs(start: &str, max_depth: u32) -> File {
+    fn recurse_dirs_aux(start: &str, depth: u32, max_depth: u32) -> File {
     let mut root = File {
         name: String::from(start),
         sub_elements: Vec::new(),
@@ -46,7 +47,7 @@ pub fn recurse_dirs(start: &str, depth: u32, max_depth: u32) -> File {
                     if let Ok(file_type) = dir.file_type() {
                         let sub_elements = if file_type.is_dir() && depth < max_depth {
                             println!("{} is dir {}", file_name, file_type.is_dir());
-                            recurse_dirs(dir.path().to_str().unwrap(), depth + 1, max_depth)
+                            recurse_dirs_aux(dir.path().to_str().unwrap(), depth + 1, max_depth)
                                 .sub_elements
                         } else {
                             Vec::new()
@@ -63,4 +64,6 @@ pub fn recurse_dirs(start: &str, depth: u32, max_depth: u32) -> File {
         }
     }
     root
+    }
+    recurse_dirs_aux(start, 0, max_depth)
 }
